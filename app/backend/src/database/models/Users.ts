@@ -7,9 +7,9 @@ type UserAttributes = {
   role: string,
   email: string,
   password: string,
-}
+};
 
-type UserCreationAttributes = Optional<UserAttributes, 'id'>
+type UserCreationAttributes = Optional<UserAttributes, 'id'>;
 
 export default class Users extends Model<UserAttributes, UserCreationAttributes> {
   declare id: number;
@@ -45,4 +45,5 @@ Users.init({
   sequelize: db,
   modelName: 'users',
   timestamps: false,
-})
+  underscored: true,
+});
