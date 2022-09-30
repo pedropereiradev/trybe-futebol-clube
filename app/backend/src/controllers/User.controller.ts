@@ -4,7 +4,9 @@ import UserService from '../services/User.service';
 import loginDTOValidation from './dto/loginDTO';
 
 export default class UserController {
-  static async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+  constructor(private userService: UserService) {}
+
+  public async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       const { error } = loginDTOValidation.validate(req.body as IUserLogin);
 
@@ -12,7 +14,7 @@ export default class UserController {
         next(error);
       }
 
-      const { status, message, token } = await UserService.login(req.body);
+      const { status, message, token } = await this.userService.login(req.body);
 
       if (message) {
         return res.status(status).json({ message });
@@ -24,7 +26,7 @@ export default class UserController {
     }
   }
 
-  static async getUserRole(
+  public async getUserRole(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -32,9 +34,13 @@ export default class UserController {
     try {
       const { authorization } = req.headers;
 
-      const role = await UserService.validateUser(authorization || '');
+      const result = await this.userService.validateUser(authorization || '');
 
-      return res.status(200).json({ role });
+      if (!result) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      return res.status(200).json({ role: result.role });
     } catch (err) {
       next(err);
     }

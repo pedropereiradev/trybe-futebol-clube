@@ -1,4 +1,4 @@
-import UserModel from '../models/User.model';
+import Users from '../database/models/Users';
 import IUserLogin from '../interfaces/User.interface';
 import Bcrypt from './utils/Bcrypt.service';
 import Token from './utils/Token.service';
@@ -10,10 +10,13 @@ type response = {
 };
 
 export default class UserService {
-  public model = UserModel;
+  constructor(private userModel: typeof Users) {}
 
-  static async login(params: IUserLogin): Promise<response> {
-    const result = await UserModel.findOne(params.email);
+  public async login(params: IUserLogin): Promise<response> {
+    const result = await this.userModel.findOne({
+      where: {
+        email: params.email,
+      } });
 
     if (!result || !Bcrypt.compare(result.password, params.password)) {
       return { status: 401, message: 'Incorrect email or password' };
@@ -21,14 +24,22 @@ export default class UserService {
 
     const token = Token.generate(params.email);
 
+    console.log({
+      result, token,
+    });
+
     return { status: 200, token };
   }
 
-  static async validateUser(token: string) {
-    const data = Token.validate(token);
+  public async validateUser(token: string) {
+    const email = Token.validate(token);
 
-    const { role } = await UserModel.findOne(data as string);
+    const result = await this.userModel.findOne({
+      where: {
+        email,
+      },
+    });
 
-    return role;
+    return result;
   }
 }

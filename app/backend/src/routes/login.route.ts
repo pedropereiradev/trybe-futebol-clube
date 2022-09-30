@@ -1,10 +1,14 @@
 import { Router } from 'express';
+import UserService from '../services/User.service';
 import UserController from '../controllers/User.controller';
+import Users from '../database/models/Users';
 
 const router = Router();
 
-router.post('/', UserController.login);
+const userController = new UserController(new UserService(Users));
 
-router.get('/validate', UserController.getUserRole);
+router.post('/', (req, res, next) => userController.login(req, res, next));
+
+router.get('/validate', (req, res, next) => userController.getUserRole(req, res, next));
 
 export default router;
