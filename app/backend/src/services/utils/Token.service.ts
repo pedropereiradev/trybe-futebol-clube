@@ -7,7 +7,13 @@ export default class Token {
     return jwt.sign(email, JWT_SECRET);
   }
 
-  public static validate(token: string): string | jwt.JwtPayload {
-    return jwt.verify(token, JWT_SECRET);
+  public static validate(token: string) {
+    try {
+      const data = jwt.verify(token, JWT_SECRET);
+
+      return data;
+    } catch (err) {
+      return null;
+    }
   }
 }
