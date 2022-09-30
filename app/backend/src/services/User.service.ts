@@ -24,10 +24,6 @@ export default class UserService {
 
     const token = Token.generate(params.email);
 
-    console.log({
-      result, token,
-    });
-
     return { status: 200, token };
   }
 
