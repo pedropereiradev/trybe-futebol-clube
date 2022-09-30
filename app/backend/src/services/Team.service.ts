@@ -1,5 +1,5 @@
-import TeamsModel from '../models/Teams.model';
 import ITeams from '../interfaces/Team.interface';
+import Teams from '../database/models/Teams';
 
 type response = {
   status: number
@@ -7,14 +7,16 @@ type response = {
 };
 
 export default class TeamService {
-  public static async findAll(): Promise<response> {
-    const result = await TeamsModel.findAll();
+  constructor(private teamModel: typeof Teams) {}
+
+  public async findAll(): Promise<response> {
+    const result = await this.teamModel.findAll();
 
     return { status: 200, response: result };
   }
 
-  public static async findOne(id: number): Promise<response> {
-    const result = await TeamsModel.findOne(id);
+  public async findOne(id: number): Promise<response> {
+    const result = await this.teamModel.findByPk(id);
 
     return { status: 200, response: result || {} };
   }
