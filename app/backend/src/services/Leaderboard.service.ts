@@ -6,7 +6,7 @@ import TeamService from './Team.service';
 import Teams from '../database/models/Teams';
 import ILeaderboard from '../interfaces/Leaderboard.interface';
 
-export default class LeaderboardService {
+export default abstract class LeaderboardService {
   protected _matchService: MatchService;
   protected _teamService: TeamService;
   protected _teams: IMatch[][];
