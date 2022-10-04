@@ -38,14 +38,14 @@ export default class LeaderboardAwayService extends LeaderboardService {
     });
   }
 
-  public async getDataValuesByTeam() {
+  protected async getDataValuesByTeam() {
     const result = this._teams.map((team) => {
       this.goals(team);
       this.winsDrawsLosses(team);
       this.totalValues(team);
 
       return {
-        name: team[0].teamAway?.teamName,
+        name: team[0].teamAway?.teamName || '',
         totalPoints: this._totalPoints,
         totalGames: this._totalGames,
         totalVictories: this._wins,
